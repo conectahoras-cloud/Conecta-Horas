@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Área do Funcionário — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
@@ -31,8 +30,7 @@
 
     <section style="margin-top: 2rem;">
       <h2>Meu Banco de Horas</h2>
-      <div id="listaHoras">
-        </div>
+      <div id="listaHoras"></div>
     </section>
     
     <hr style="margin: 2rem 0; border-color: var(--border-color);">
@@ -44,10 +42,8 @@
 
   <script src="main.js"></script>
   <script>
-    // Função de inicialização da página do funcionário
     function initFuncionarioPage() {
-      var u = getCurrentUser();
-      // Proteção de página
+      var u = getSessionUser();
       if (!u || u.tipo !== 'funcionario') {
         showNotification('Acesso negado. Faça login como funcionário.', 'error');
         window.location.href = 'login.html';
@@ -56,7 +52,6 @@
       
       document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + '! Gerencie suas horas e candidaturas aqui.';
       
-      // Carrega os dados na tela
       renderMinhasHoras();
       renderVagasList(loadData('ch_vagas'), 'listaVagas', true);
       showMenuUser();
