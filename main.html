@@ -32,13 +32,10 @@
 
   <script src="main.js"></script>
   <script>
-    // Função de inicialização da página inicial
     function initHomepage() {
       showMenuUser();
-      // A função renderVagasList agora preenche a seção de vagas na homepage
       renderVagasList(loadData('ch_vagas'), 'listaVagasHomepage', true);
     }
-    // Executa a inicialização quando a página carrega
     initHomepage();
   </script>
 </body>
