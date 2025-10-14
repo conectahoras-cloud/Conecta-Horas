@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <title>Login — ConectaHoras</title>
-    <link rel="stylesheet" href="main.css">
+  <meta charset="utf-8">
+  <title>Login — ConectaHoras</title>
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <div id="notification-container"></div>
-    <header class="topbar">
-        <div class="brand">ConectaHoras</div>
-        <nav><a href="main.html">Início</a></nav>
-        <div id="menuUser"></div>
-    </header>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <div class="brand">ConectaHoras</div>
+    <nav><a href="main.html">Início</a></nav>
+    <div id="menuUser"></div>
+  </header>
 
-    <main class="container">
-        <div class="form">
-            <h1>Login</h1>
-            <label>Email:<input type="text" id="loginEmail"></label>
-            <label>Senha:<input type="password" id="loginSenha"></label>
-            <button class="btn" onclick="doLogin()">Entrar</button>
-            <p class="form-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
-        </div>
-    </main>
+  <main class="container">
+    <div class="form">
+      <h1>Login</h1>
+      <label>Email:<input type="text" id="loginEmail"></label>
+      <label>Senha:<input type="password" id="loginSenha"></label>
+      <button class="btn" onclick="doLogin()">Entrar</button>
+      <p class="form-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
+  </main>
 
-    <script src="main.js"></script>
-    <script>
-        function doLogin() {
-            var email = document.getElementById('loginEmail').value.trim();
-            var senha = document.getElementById('loginSenha').value;
-            if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
-            var u = loginUser(email, senha);
-            if (u) {
-                if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
-                else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
-            }
-        }
-        showMenuUser();
-    </script>
+  <script src="main.js"></script>
+  <script>
+    function doLogin() {
+      var email = document.getElementById('loginEmail').value.trim();
+      var senha = document.getElementById('loginSenha').value;
+      if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
+      var u = loginUser(email, senha);
+      if (u) {
+        if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
+        else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
+      }
+    }
+    showMenuUser();
+  </script>
 </body>
 </html>
