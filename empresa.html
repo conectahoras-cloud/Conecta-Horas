@@ -2,71 +2,75 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Área do Empregador — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
+  <div id="notification-container"></div>
   <header class="topbar">
     <div class="brand">ConectaHoras</div>
-    <nav><a href="main.html">Menu</a> <a href="login.html">Login</a></nav>
+    <nav>
+      <a href="main.html">Início</a>
+      <a href="funcionario.html">Área do Funcionário</a>
+      <a href="empresa.html">Área do Empregador</a>
+    </nav>
     <div id="menuUser"></div>
   </header>
 
   <main class="container">
     <h1>Área do Empregador</h1>
-
-    <div id="bemvindo" class="small"></div>
+    <div id="bemvindo" class="small" style="text-align: center; margin-bottom: 2rem;"></div>
 
     <section class="form">
-      <h3>Publicar vaga</h3>
+      <h3>Publicar nova vaga</h3>
       <label>Título:<input type="text" id="vagaTitulo"></label>
       <label>Descrição:<input type="text" id="vagaDescricao"></label>
-      <label>Salário:<input type="text" id="vagaSalario"></label>
-      <label>Carga horária:<input type="text" id="vagaCarga"></label>
+      <label>Salário (opcional):<input type="text" id="vagaSalario"></label>
+      <label>Carga horária (opcional):<input type="text" id="vagaCarga"></label>
       <button class="btn" onclick="doPublicar()">Publicar vaga</button>
     </section>
 
-    <section style="margin-top:12px">
+    <section style="margin-top: 2rem;">
       <h2>Minhas Vagas e Candidatos</h2>
       <div id="minhasVagas"></div>
     </section>
-
-    <p><a href="main.html">Voltar ao Menu</a></p>
   </main>
 
   <script src="main.js"></script>
   <script>
-    function ensureEmpregador(){
-      var u = getCurrentUser();
-      if(!u){ alert('Faça login como empregador para acessar esta área.'); window.location='login.html'; return false; }
-      if(u.tipo !== 'empregador'){ alert('Esta área é apenas para empregadores.'); window.location='login.html'; return false; }
-      document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + ' — publique vagas aqui.';
+    function ensureEmpregador() {
+      var u = getSessionUser();
+      if (!u || u.tipo !== 'empregador') {
+        showNotification('Acesso negado. Faça login como empregador.', 'error');
+        window.location.href = 'login.html';
+        return false;
+      }
+      document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + ' — publique e gerencie suas vagas.';
       return true;
     }
 
-    function doPublicar(){
+    function doPublicar() {
       var titulo = document.getElementById('vagaTitulo').value.trim();
       var desc = document.getElementById('vagaDescricao').value.trim();
       var salario = document.getElementById('vagaSalario').value.trim();
       var carga = document.getElementById('vagaCarga').value.trim();
-      if(!titulo || !desc){ alert('Preencha título e descrição da vaga.'); return; }
-      if(publicarVaga(titulo, desc, salario, carga)){
-        document.getElementById('vagaTitulo').value='';
-        document.getElementById('vagaDescricao').value='';
-        document.getElementById('vagaSalario').value='';
-        document.getElementById('vagaCarga').value='';
+      if (!titulo || !desc) { return showNotification('Título e descrição são obrigatórios.', 'error'); }
+      if (publicarVaga(titulo, desc, salario, carga)) {
+        document.getElementById('vagaTitulo').value = '';
+        document.getElementById('vagaDescricao').value = '';
+        document.getElementById('vagaSalario').value = '';
+        document.getElementById('vagaCarga').value = '';
         renderMinhasVagas();
       }
     }
 
-    function renderMinhasVagas(){
-      var u = getCurrentUser();
-      if(!u) return;
+    function renderMinhasVagas() {
+      var u = getSessionUser();
+      if (!u) return;
       renderVagasComCandidatos(u.id, 'minhasVagas');
     }
 
-    if(ensureEmpregador()){
+    if (ensureEmpregador()) {
       renderMinhasVagas();
       showMenuUser();
     }
