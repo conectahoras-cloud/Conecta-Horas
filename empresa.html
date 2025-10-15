@@ -38,7 +38,17 @@
 
   <script src="main.js"></script>
   <script>
-    // Funções que são chamadas por botões (onclick) ficam no escopo global
+    function ensureEmpregador() {
+      var u = getSessionUser();
+      if (!u || u.tipo !== 'empregador') {
+        showNotification('Acesso negado. Faça login como empregador.', 'error');
+        window.location.href = 'login.html';
+        return false;
+      }
+      document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + ' — publique e gerencie suas vagas.';
+      return true;
+    }
+
     function doPublicar() {
       var titulo = document.getElementById('vagaTitulo').value.trim();
       var desc = document.getElementById('vagaDescricao').value.trim();
@@ -57,30 +67,13 @@
     function renderMinhasVagas() {
       var u = getSessionUser();
       if (!u) return;
-      // A função do main.js que estava dando erro agora será encontrada
       renderVagasComCandidatos(u.id, 'minhasVagas');
     }
 
-    // Apenas o código de inicialização da página (que roda sozinho)
-    // fica esperando o DOM carregar completamente.
-    document.addEventListener('DOMContentLoaded', function() {
-      function ensureEmpregador() {
-        var u = getSessionUser();
-        if (!u || u.tipo !== 'empregador') {
-          showNotification('Acesso negado. Faça login como empregador.', 'error');
-          window.location.href = 'login.html';
-          return false;
-        }
-        document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + ' — publique e gerencie suas vagas.';
-        return true;
-      }
-
-      // Executa a inicialização
-      if (ensureEmpregador()) {
-        renderMinhasVagas();
-        showMenuUser();
-      }
-    });
+    if (ensureEmpregador()) {
+      renderMinhasVagas();
+      showMenuUser();
+    }
   </script>
 </body>
 </html>

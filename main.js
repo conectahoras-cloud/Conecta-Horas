@@ -68,12 +68,7 @@ function logout() {
     if (window.location.pathname.includes('funcionario.html') || window.location.pathname.includes('empresa.html')) {
         window.location.href = 'login.html';
     } else {
-        // Apenas atualiza o menu se já estiver em uma página pública
-        if (typeof showMenuUser === 'function') {
-            showMenuUser();
-        } else {
-             window.location.href = 'main.html';
-        }
+        showMenuUser();
     }
 }
 
@@ -84,86 +79,4 @@ function showMenuUser() {
     if (u) {
         el.innerHTML = 'Logado: <strong>' + u.nome + '</strong> (' + u.tipo + ') <button onclick="logout()" class="btn secondary">Sair</button>';
     } else {
-        el.innerHTML = '<a href="login.html" class="btn">Login</a> <a href="cadastro.html" class="btn">Cadastre-se</a>';
-    }
-}
-
-// --- Funções de Vagas ---
-function publicarVaga(titulo, descricao, salario, carga) {
-    var u = getSessionUser();
-    if (!u || u.tipo !== 'empregador') { 
-        showNotification('Acesso negado. Apenas empregadores podem publicar.', 'error');
-        return false; 
-    }
-    var vagas = loadData('ch_vagas');
-    var vaga = {
-        id: 'v_' + new Date().getTime(),
-        titulo: titulo,
-        descricao: descricao,
-        salario: salario,
-        carga: carga,
-        empregadorId: u.id,
-        empregadorNome: u.nome,
-        candidatos: []
-    };
-    vagas.unshift(vaga); // Adiciona a nova vaga no INÍCIO da lista
-    saveData('ch_vagas', vagas);
-    showNotification('Vaga publicada com sucesso!', 'success');
-    return true;
-}
-
-function candidatarSe(vagaId) {
-    var u = getSessionUser();
-    if (!u || u.tipo !== 'funcionario') { 
-        showNotification('Faça login como funcionário para se candidatar.', 'error');
-        return false; 
-    }
-    var vagas = loadData('ch_vagas');
-    var vagaEncontrada = null;
-    for(var i = 0; i < vagas.length; i++) {
-        if (vagas[i].id === vagaId) {
-            vagaEncontrada = vagas[i];
-            break;
-        }
-    }
-
-    if (vagaEncontrada) {
-        // Usando indexOf para verificar se o id já existe no array
-        if (vagaEncontrada.candidatos.indexOf(u.id) !== -1) {
-            showNotification('Você já se candidatou a esta vaga.', 'error');
-            return false;
-        }
-        vagaEncontrada.candidatos.push(u.id);
-        saveData('ch_vagas', vagas);
-        showNotification('Candidatura enviada!', 'success');
-        return true;
-    }
-    showNotification('Erro: Vaga não encontrada.', 'error');
-    return false;
-}
-
-// --- Funções de Renderização (Mostrar coisas na tela) ---
-function renderVagasList(vagas, containerId, allowApply) {
-    var el = document.getElementById(containerId);
-    if (!el) return;
-    if (!vagas || vagas.length === 0) { 
-        el.innerHTML = '<p class="small" style="text-align: center;">Nenhuma vaga encontrada no momento.</p>'; 
-        return; 
-    }
-    var html = '';
-    for (var i = 0; i < vagas.length; i++) {
-        var v = vagas[i];
-        html += '<div class="vaga">';
-        html += '<h4>' + v.titulo + '</h4>';
-        html += '<p><strong>Empresa:</strong> ' + (v.empregadorNome || 'N/A') + '</p>';
-        html += '<p>' + v.descricao + '</p>';
-        html += '<p class="small">Salário: ' + (v.salario || 'A combinar') + ' · Carga Horária: ' + (v.carga || 'Não informada') + '</p>';
-        if (allowApply) {
-            html += '<button class="btn" onclick="candidatarSe(\'' + v.id + '\')">Candidatar-se</button>';
-        }
-        html += '</div>';
-    }
-    el.innerHTML = html;
-}
-
-function renderVagasComCandidatos(emp
+        el.innerHTML = '<a href="login.html" class="btn">
