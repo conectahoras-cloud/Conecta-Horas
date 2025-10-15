@@ -12,7 +12,6 @@
     <nav></nav>
     <div id="menuUser"></div>
   </header>
-
   <main class="container">
     <div class="form">
       <h1>Login</h1>
@@ -22,7 +21,6 @@
       <p class="form-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
     </div>
   </main>
-
   <script src="main.js"></script>
   <script>
     function doLogin() {
@@ -31,7 +29,6 @@
       if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
       var u = loginUser(email, senha);
       if (u) {
-        // Redireciona para a página inicial após o login. O menu dinâmico fará o resto.
         window.location.href = 'index.html';
       }
     }
