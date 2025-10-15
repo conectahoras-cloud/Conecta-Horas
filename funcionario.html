@@ -42,21 +42,24 @@
 
   <script src="main.js"></script>
   <script>
-    function initFuncionarioPage() {
-      var u = getSessionUser();
-      if (!u || u.tipo !== 'funcionario') {
-        showNotification('Acesso negado. Faça login como funcionário.', 'error');
-        window.location.href = 'login.html';
-        return;
+    // CORREÇÃO: Espera tudo carregar antes de executar
+    document.addEventListener('DOMContentLoaded', function() {
+      function initFuncionarioPage() {
+        var u = getSessionUser();
+        if (!u || u.tipo !== 'funcionario') {
+          showNotification('Acesso negado. Faça login como funcionário.', 'error');
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + '! Gerencie suas horas e candidaturas aqui.';
+        
+        renderMinhasHoras();
+        renderVagasList(loadData('ch_vagas'), 'listaVagas', true);
+        showMenuUser();
       }
-      
-      document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + '! Gerencie suas horas e candidaturas aqui.';
-      
-      renderMinhasHoras();
-      renderVagasList(loadData('ch_vagas'), 'listaVagas', true);
-      showMenuUser();
-    }
-    initFuncionarioPage();
+      initFuncionarioPage();
+    });
   </script>
 </body>
 </html>
