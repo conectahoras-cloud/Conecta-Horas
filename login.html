@@ -8,8 +8,8 @@
 <body>
   <div id="notification-container"></div>
   <header class="topbar">
-    <div class="brand">ConectaHoras</div>
-    <nav><a href="main.html">Início</a></nav>
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
     <div id="menuUser"></div>
   </header>
 
@@ -31,11 +31,13 @@
       if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
       var u = loginUser(email, senha);
       if (u) {
-        if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
-        else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
+        // Redireciona para a página inicial após o login. O menu dinâmico fará o resto.
+        window.location.href = 'index.html';
       }
     }
-    showMenuUser();
+    document.addEventListener('DOMContentLoaded', function() {
+        showMenuUser();
+    });
   </script>
 </body>
 </html>
