@@ -9,27 +9,23 @@
   <div id="notification-container"></div>
   <header class="topbar">
     <a href="index.html" class="brand">ConectaHoras</a>
-    <nav></nav>
+    <nav></nav> 
     <div id="menuUser"></div>
   </header>
-
   <main class="hero">
     <div class="hero-content">
       <h1>Encontre a Oportunidade Certa</h1>
       <p>Conectamos profissionais talentosos a empresas inovadoras.</p>
     </div>
   </main>
-
   <section class="container vagas-section">
     <h2>Vagas Recentes</h2>
     <div id="listaVagasHomepage"></div>
   </section>
-
   <script src="main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
         showMenuUser();
-        // Carrega a lista de vagas na página inicial
         renderVagasList(loadData('ch_vagas'), 'listaVagasHomepage', true);
     });
   </script>
