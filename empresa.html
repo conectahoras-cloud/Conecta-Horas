@@ -37,6 +37,7 @@
   </main>
 
   <script src="main.js"></script>
+
   <script>
     function ensureEmpregador() {
       var u = getSessionUser();
@@ -70,6 +71,7 @@
       renderVagasComCandidatos(u.id, 'minhasVagas');
     }
 
+    // Código de inicialização da página
     if (ensureEmpregador()) {
       renderMinhasVagas();
       showMenuUser();
