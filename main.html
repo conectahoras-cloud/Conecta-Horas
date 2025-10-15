@@ -26,16 +26,17 @@
 
   <section class="container vagas-section">
     <h2>Vagas Recentes</h2>
-    <div id="listaVagasHomepage">
-      </div>
+    <div id="listaVagasHomepage"></div>
   </section>
 
   <script src="main.js"></script>
+
   <script>
     function initHomepage() {
       showMenuUser();
       renderVagasList(loadData('ch_vagas'), 'listaVagasHomepage', true);
     }
+    // Executa a função de inicialização
     initHomepage();
   </script>
 </body>
