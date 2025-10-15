@@ -8,8 +8,8 @@
 <body>
   <div id="notification-container"></div>
   <header class="topbar">
-    <div class="brand">ConectaHoras</div>
-    <nav><a href="main.html">Início</a></nav>
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
     <div id="menuUser"></div>
   </header>
 
@@ -44,7 +44,9 @@
         }, 1000);
       }
     }
-    showMenuUser();
+    document.addEventListener('DOMContentLoaded', function() {
+        showMenuUser();
+    });
   </script>
 </body>
 </html>
