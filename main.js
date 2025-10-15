@@ -1,4 +1,4 @@
-/* main.js - Lógica central do ConectaHoras (VERSÃO COM MENU DINÂMICO) */
+/* main.js - Lógica central do ConectaHoras (VERSÃO PROFISSIONAL) */
 
 // --- Helpers de storage ---
 function loadData(key) { return JSON.parse(localStorage.getItem(key)) || []; }
@@ -51,42 +51,29 @@ function loginUser(email, senha) {
 function logout() {
     clearSessionUser();
     showNotification('Você saiu da sua conta.', 'success');
-    // Sempre redireciona para a página inicial após o logout
-    window.location.href = 'main.html';
-}
-
-// --- A NOVA FUNÇÃO DE MENU DINÂMICO ---
-function showMenuUser() {
-    var navContainer = document.querySelector('.topbar nav');
-    var userMenuContainer = document.getElementById('menuUser');
-    var u = getSessionUser();
-
-    if (u) { // Se TEM um usuário logado
-        userMenuContainer.innerHTML = 'Logado: <strong>' + u.nome + '</strong> <button onclick="logout()" class="btn secondary">Sair</button>';
-        
-        // Constrói o menu com base no tipo de usuário
-        if (u.tipo === 'funcionario') {
-            navContainer.innerHTML = '<a href="main.html">Início</a>' +
-                                     '<a href="funcionario.html">Área do Funcionário</a>';
-        } else if (u.tipo === 'empregador') {
-            navContainer.innerHTML = '<a href="main.html">Início</a>' +
-                                     '<a href="empresa.html">Área do Empregador</a>';
-        }
-
-    } else { // Se NÃO TEM ninguém logado
-        userMenuContainer.innerHTML = '<a href="login.html" class="btn">Login / Cadastro</a>';
-        navContainer.innerHTML = '<a href="main.html">Início</a>' +
-                                 '<a href="login.html">Área do Funcionário</a>' +
-                                 '<a href="login.html">Área do Empregador</a>';
+    if (window.location.pathname.includes('funcionario.html') || window.location.pathname.includes('empresa.html')) {
+        window.location.href = 'login.html';
+    } else {
+        showMenuUser();
     }
 }
 
+function showMenuUser() {
+    var el = document.getElementById('menuUser');
+    if (!el) return;
+    var u = getSessionUser();
+    if (u) {
+        el.innerHTML = 'Logado: <strong>' + u.nome + '</strong> (' + u.tipo + ') <button onclick="logout()" class="btn secondary">Sair</button>';
+    } else {
+        el.innerHTML = '<a href="login.html" class="btn">Login</a> <a href="cadastro.html" class="btn">Cadastre-se</a>';
+    }
+}
 
 // --- Funções de Vagas ---
 function publicarVaga(titulo, descricao, salario, carga) {
     var u = getSessionUser();
     if (!u || u.tipo !== 'empregador') { 
-        showNotification('Acesso negado.', 'error');
+        showNotification('Acesso negado. Apenas empregadores podem publicar.', 'error');
         return false; 
     }
     var vagas = loadData('ch_vagas');
@@ -117,7 +104,7 @@ function candidatarSe(vagaId) {
     return false;
 }
 
-// --- Funções do Banco de Horas ---
+// --- FUNÇÕES DO BANCO DE HORAS (CORRIGIDAS) ---
 function registrarHoras() {
     var u = getSessionUser();
     if (!u || u.tipo !== 'funcionario') {
@@ -127,17 +114,55 @@ function registrarHoras() {
     var data = document.getElementById('horaData').value;
     var horas = document.getElementById('horaQuantidade').value;
     if (!data || !horas || horas <= 0) {
-        showNotification('Preencha a data e uma quantidade de horas válida.', 'error');
+        showNotification('Por favor, preencha a data e uma quantidade de horas válida.', 'error');
         return;
     }
     var horasDb = loadData('ch_horas');
-    var registro = { id: 'h_' + new Date().getTime(), userId: u.id, data: data, horas: parseFloat(horas) };
+    var registro = {
+        id: 'h_' + new Date().getTime(),
+        userId: u.id,
+        data: data,
+        horas: parseFloat(horas)
+    };
     horasDb.push(registro);
     saveData('ch_horas', horasDb);
     showNotification('Horas registradas com sucesso!', 'success');
-    renderMinhasHoras();
+    
+    // Limpa os campos do formulário
+    document.getElementById('horaData').value = '';
+    document.getElementById('horaQuantidade').value = '';
+
+    renderMinhasHoras(); // Atualiza a tabela na tela
 }
 
-function renderMinhasHoras() { /* ... (código sem alteração) ... */ }
+function renderMinhasHoras() {
+    var u = getSessionUser();
+    var el = document.getElementById('listaHoras');
+    if (!el || !u) return;
+
+    var horasDb = loadData('ch_horas');
+    var minhasHoras = [];
+    for (var i = 0; i < horasDb.length; i++) {
+        if (horasDb[i].userId === u.id) {
+            minhasHoras.push(horasDb[i]);
+        }
+    }
+
+    if (minhasHoras.length === 0) {
+        el.innerHTML = '<p class="small">Nenhum registro de horas encontrado.</p>';
+        return;
+    }
+
+    var totalHoras = 0;
+    var html = '<table><thead><tr><th>Data</th><th>Horas Trabalhadas</th></tr></thead><tbody>';
+    for (var i = 0; i < minhasHoras.length; i++) {
+        html += '<tr><td>' + minhasHoras[i].data + '</td><td>' + minhasHoras[i].horas + '</td></tr>';
+        totalHoras += minhasHoras[i].horas;
+    }
+    html += '</tbody><tfoot><tr><td><strong>Total de Horas</strong></td><td><strong>' + totalHoras + '</strong></td></tr></tfoot></table>';
+    el.innerHTML = html;
+}
+
+// --- Funções de renderização que já existiam ---
 function renderVagasList(vagas, containerId, allowApply) { /* ... (código sem alteração) ... */ }
 function renderVagasComCandidatos(empId, containerId) { /* ... (código sem alteração) ... */ }
