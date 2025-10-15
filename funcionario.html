@@ -8,62 +8,44 @@
 <body>
   <div id="notification-container"></div>
   <header class="topbar">
-    <div class="brand">ConectaHoras</div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="funcionario.html">Área do Funcionário</a>
-      <a href="empresa.html">Área do Empregador</a>
-    </nav>
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
     <div id="menuUser"></div>
   </header>
 
   <main class="container">
     <h1>Área do Funcionário</h1>
     <div id="bemvindo" class="small" style="text-align: center; margin-bottom: 2rem;"></div>
-
     <section class="form">
       <h3>Registrar Horas Trabalhadas</h3>
-      <label>Data do Trabalho: <input type="date" id="horaData"></label>
-      <label>Horas Trabalhadas: <input type="number" id="horaQuantidade" placeholder="Ex: 8"></label>
-      <button class="btn" onclick="registrarHoras()">Registrar Horas</button>
+      <label>Data: <input type="date" id="horaData"></label>
+      <label>Horas: <input type="number" id="horaQuantidade" placeholder="8"></label>
+      <button class="btn" onclick="registrarHoras()">Registrar</button>
     </section>
-
     <section style="margin-top: 2rem;">
       <h2>Meu Banco de Horas</h2>
-      <div id="listaHoras">
-        </div>
+      <div id="listaHoras"></div>
     </section>
-    
     <hr style="margin: 2rem 0; border-color: var(--border-color);">
     <section>
-      <h2>Vagas Disponíveis para Você</h2>
+      <h2>Vagas Disponíveis</h2>
       <div id="listaVagas"></div>
     </section>
   </main>
 
   <script src="main.js"></script>
   <script>
-    // CORREÇÃO: Espera o navegador carregar tudo antes de executar
     document.addEventListener('DOMContentLoaded', function() {
-      // Função de inicialização da página do funcionário
-      function initFuncionarioPage() {
         var u = getSessionUser();
-        // Proteção de página
         if (!u || u.tipo !== 'funcionario') {
-          showNotification('Acesso negado. Faça login como funcionário.', 'error');
-          window.location.href = 'login.html';
-          return;
+            showNotification('Acesso negado. Faça login como funcionário.', 'error');
+            window.location.href = 'login.html';
+            return;
         }
-        
         document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + '! Gerencie suas horas e candidaturas aqui.';
-        
-        // Carrega os dados na tela
         renderMinhasHoras();
         renderVagasList(loadData('ch_vagas'), 'listaVagas', true);
         showMenuUser();
-      }
-      // Executa a inicialização
-      initFuncionarioPage();
     });
   </script>
 </body>
