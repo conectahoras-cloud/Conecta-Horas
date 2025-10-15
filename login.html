@@ -25,19 +25,27 @@
 
   <script src="main.js"></script>
   <script>
-    // A função doLogin() agora está no escopo global, onde o botão pode encontrá-la.
+    // A função doLogin() AGORA ESTÁ AQUI, no escopo global, onde o botão pode encontrá-la.
     function doLogin() {
       var email = document.getElementById('loginEmail').value.trim();
       var senha = document.getElementById('loginSenha').value;
-      if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
+      
+      if (!email || !senha) {
+        return showNotification('Preencha email e senha.', 'error');
+      }
+      
       var u = loginUser(email, senha);
       if (u) {
-        if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
-        else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
+        if (u.tipo === 'funcionario') {
+          window.location.href = 'funcionario.html';
+        } else if (u.tipo === 'empregador') {
+          window.location.href = 'empresa.html';
+        }
       }
     }
 
-    // Apenas a inicialização do menu fica esperando a página carregar.
+    // Apenas a inicialização do menu, que não é chamada por um 'onclick',
+    // continua esperando a página carregar para ser executada com segurança.
     document.addEventListener('DOMContentLoaded', function() {
       showMenuUser();
     });
