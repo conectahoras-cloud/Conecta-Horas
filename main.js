@@ -68,7 +68,12 @@ function logout() {
     if (window.location.pathname.includes('funcionario.html') || window.location.pathname.includes('empresa.html')) {
         window.location.href = 'login.html';
     } else {
-        showMenuUser();
+        // Apenas atualiza o menu se já estiver em uma página pública
+        if (typeof showMenuUser === 'function') {
+            showMenuUser();
+        } else {
+             window.location.href = 'main.html';
+        }
     }
 }
 
@@ -79,4 +84,180 @@ function showMenuUser() {
     if (u) {
         el.innerHTML = 'Logado: <strong>' + u.nome + '</strong> (' + u.tipo + ') <button onclick="logout()" class="btn secondary">Sair</button>';
     } else {
-        el.innerHTML = '<a href="login.html" class="btn">
+        el.innerHTML = '<a href="login.html" class="btn">Login</a> <a href="cadastro.html" class="btn">Cadastre-se</a>';
+    }
+}
+
+// --- Funções de Vagas ---
+function publicarVaga(titulo, descricao, salario, carga) {
+    var u = getSessionUser();
+    if (!u || u.tipo !== 'empregador') { 
+        showNotification('Acesso negado. Apenas empregadores podem publicar.', 'error');
+        return false; 
+    }
+    var vagas = loadData('ch_vagas');
+    var vaga = {
+        id: 'v_' + new Date().getTime(),
+        titulo: titulo,
+        descricao: descricao,
+        salario: salario,
+        carga: carga,
+        empregadorId: u.id,
+        empregadorNome: u.nome,
+        candidatos: []
+    };
+    vagas.unshift(vaga); // Adiciona a nova vaga no INÍCIO da lista
+    saveData('ch_vagas', vagas);
+    showNotification('Vaga publicada com sucesso!', 'success');
+    return true;
+}
+
+function candidatarSe(vagaId) {
+    var u = getSessionUser();
+    if (!u || u.tipo !== 'funcionario') { 
+        showNotification('Faça login como funcionário para se candidatar.', 'error');
+        return false; 
+    }
+    var vagas = loadData('ch_vagas');
+    var vagaEncontrada = null;
+    for(var i = 0; i < vagas.length; i++) {
+        if (vagas[i].id === vagaId) {
+            vagaEncontrada = vagas[i];
+            break;
+        }
+    }
+
+    if (vagaEncontrada) {
+        // Usando indexOf para verificar se o id já existe no array
+        if (vagaEncontrada.candidatos.indexOf(u.id) !== -1) {
+            showNotification('Você já se candidatou a esta vaga.', 'error');
+            return false;
+        }
+        vagaEncontrada.candidatos.push(u.id);
+        saveData('ch_vagas', vagas);
+        showNotification('Candidatura enviada!', 'success');
+        return true;
+    }
+    showNotification('Erro: Vaga não encontrada.', 'error');
+    return false;
+}
+
+// --- Funções de Renderização (Mostrar coisas na tela) ---
+function renderVagasList(vagas, containerId, allowApply) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    if (!vagas || vagas.length === 0) { 
+        el.innerHTML = '<p class="small" style="text-align: center;">Nenhuma vaga encontrada no momento.</p>'; 
+        return; 
+    }
+    var html = '';
+    for (var i = 0; i < vagas.length; i++) {
+        var v = vagas[i];
+        html += '<div class="vaga">';
+        html += '<h4>' + v.titulo + '</h4>';
+        html += '<p><strong>Empresa:</strong> ' + (v.empregadorNome || 'N/A') + '</p>';
+        html += '<p>' + v.descricao + '</p>';
+        html += '<p class="small">Salário: ' + (v.salario || 'A combinar') + ' · Carga Horária: ' + (v.carga || 'Não informada') + '</p>';
+        if (allowApply) {
+            html += '<button class="btn" onclick="candidatarSe(\'' + v.id + '\')">Candidatar-se</button>';
+        }
+        html += '</div>';
+    }
+    el.innerHTML = html;
+}
+
+function renderVagasComCandidatos(empId, containerId) {
+    var todasVagas = loadData('ch_vagas');
+    var minhasVagas = [];
+    for (var i = 0; i < todasVagas.length; i++) {
+        if (todasVagas[i].empregadorId === empId) {
+            minhasVagas.push(todasVagas[i]);
+        }
+    }
+
+    var el = document.getElementById(containerId);
+    if (!el) return;
+    if (minhasVagas.length === 0) { 
+        el.innerHTML = '<div class="small">Você não publicou vagas ainda.</div>'; 
+        return; 
+    }
+
+    var users = loadData('ch_users');
+    var html = '';
+    for (var i = 0; i < minhasVagas.length; i++) {
+        var v = minhasVagas[i];
+        html += '<div class="vaga">';
+        html += '<h4>' + v.titulo + '</h4>';
+        html += '<p class="small">Candidatos inscritos: ' + v.candidatos.length + '</p>';
+        if (v.candidatos.length > 0) {
+            html += '<ul>';
+            for (var j = 0; j < v.candidatos.length; j++) {
+                var candidatoId = v.candidatos[j];
+                var candidatoNome = 'Usuário não encontrado';
+                for (var k = 0; k < users.length; k++) {
+                    if (users[k].id === candidatoId) {
+                        candidatoNome = users[k].nome;
+                        break;
+                    }
+                }
+                html += '<li>' + candidatoNome + '</li>';
+            }
+            html += '</ul>';
+        }
+        html += '</div>';
+    }
+    el.innerHTML = html;
+}
+
+function registrarHoras() {
+    var u = getSessionUser();
+    if (!u || u.tipo !== 'funcionario') {
+        showNotification('Acesso negado.', 'error');
+        return;
+    }
+    var data = document.getElementById('horaData').value;
+    var horas = document.getElementById('horaQuantidade').value;
+    if (!data || !horas || horas <= 0) {
+        showNotification('Por favor, preencha a data e uma quantidade de horas válida.', 'error');
+        return;
+    }
+    var horasDb = loadData('ch_horas');
+    var registro = {
+        id: 'h_' + new Date().getTime(),
+        userId: u.id,
+        data: data,
+        horas: parseFloat(horas)
+    };
+    horasDb.push(registro);
+    saveData('ch_horas', horasDb);
+    showNotification('Horas registradas com sucesso!', 'success');
+    renderMinhasHoras(); // Atualiza a tabela na tela
+}
+
+function renderMinhasHoras() {
+    var u = getSessionUser();
+    var el = document.getElementById('listaHoras');
+    if (!el || !u) return;
+
+    var horasDb = loadData('ch_horas');
+    var minhasHoras = [];
+    for (var i = 0; i < horasDb.length; i++) {
+        if (horasDb[i].userId === u.id) {
+            minhasHoras.push(horasDb[i]);
+        }
+    }
+
+    if (minhasHoras.length === 0) {
+        el.innerHTML = '<p class="small">Nenhum registro de horas encontrado.</p>';
+        return;
+    }
+
+    var totalHoras = 0;
+    var html = '<table><thead><tr><th>Data</th><th>Horas Trabalhadas</th></tr></thead><tbody>';
+    for (var i = 0; i < minhasHoras.length; i++) {
+        html += '<tr><td>' + minhasHoras[i].data + '</td><td>' + minhasHoras[i].horas + '</td></tr>';
+        totalHoras += minhasHoras[i].horas;
+    }
+    html += '</tbody><tfoot><tr><td><strong>Total de Horas</strong></td><td><strong>' + totalHoras + '</strong></td></tr></tfoot></table>';
+    el.innerHTML = html;
+}
