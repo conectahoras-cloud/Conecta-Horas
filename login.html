@@ -25,17 +25,21 @@
 
   <script src="main.js"></script>
   <script>
-    function doLogin() {
-      var email = document.getElementById('loginEmail').value.trim();
-      var senha = document.getElementById('loginSenha').value;
-      if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
-      var u = loginUser(email, senha);
-      if (u) {
-        if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
-        else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
+    // CORREÇÃO: Espera tudo carregar antes de executar
+    document.addEventListener('DOMContentLoaded', function() {
+      function doLogin() {
+        var email = document.getElementById('loginEmail').value.trim();
+        var senha = document.getElementById('loginSenha').value;
+        if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
+        var u = loginUser(email, senha);
+        if (u) {
+          if (u.tipo === 'funcionario') window.location.href = 'funcionario.html';
+          else if (u.tipo === 'empregador') window.location.href = 'empresa.html';
+        }
       }
-    }
-    showMenuUser();
+      // A função showMenuUser também precisa esperar
+      showMenuUser();
+    });
   </script>
 </body>
 </html>
