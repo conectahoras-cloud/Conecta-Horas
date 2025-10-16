@@ -1,28 +1,33 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ConectaHoras — Home</title>
+  <title>ConectaHoras — Início</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header>
-    <h1>ConectaHoras</h1>
-    <nav id="menuUser"></nav>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav> 
+    <div id="menuUser"></div>
   </header>
-
-  <main>
-    <section>
-      <h2>Vagas Recentes</h2>
-      <div id="listaVagasHomepage"></div>
-    </section>
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Encontre a Oportunidade Certa</h1>
+      <p>Conectamos profissionais talentosos a empresas inovadoras.</p>
+    </div>
   </main>
-
-  <footer>
-    <p>&copy; ConectaHoras</p>
-  </footer>
-
+  <section class="container vagas-section">
+    <h2>Vagas Recentes</h2>
+    <div id="listaVagasHomepage"></div>
+  </section>
   <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showMenuUser();
+        renderVagasList(loadData('ch_vagas'), 'listaVagasHomepage', true);
+    });
+  </script>
 </body>
 </html>
