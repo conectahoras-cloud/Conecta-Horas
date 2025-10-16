@@ -1,5 +1,30 @@
-<!DOCTYPE html><html lang='pt-br'><head><meta charset='utf-8'><title>ConectaHoras — Início</title><link rel='stylesheet' href='main.css'></head>
-<body><div id='notification-container'></div><header class='topbar'><a href='index.html' class='brand'>ConectaHoras</a><nav></nav><div id='menuUser'></div></header>
-<main class='hero'><div class='hero-content'><h1>Encontre a Oportunidade Certa</h1><p>Conectamos profissionais e empresas.</p></div></main>
-<section class='container'><h2>Vagas Recentes</h2><div id='listaVagasHomepage'></div></section>
-<script src='main.js'></script><script>document.addEventListener('DOMContentLoaded',()=>{showMenuUser();renderVagasList(loadData('ch_vagas'),'listaVagasHomepage',true);});</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>ConectaHoras — Bem-vindo</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">ConectaHoras</div>
+  </header>
+
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Encontre a Oportunidade Certa</h1>
+      <p>Conectamos profissionais talentosos a empresas inovadoras.</p>
+      
+      <div class="form-login-simplificado">
+        <input type="text" id="nomeUsuario" placeholder="Digite seu nome para entrar">
+        <button class="btn" onclick="entrar()">Entrar</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="main.js"></script>
+  <script>
+    // A função entrar() será chamada pelo botão, não precisa de inicialização aqui.
+  </script>
+</body>
+</html>
