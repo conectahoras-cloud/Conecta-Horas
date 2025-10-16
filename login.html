@@ -1,48 +1,40 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Entrar — ConectaHoras</title>
+  <title>Login — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header>
-    <h1>ConectaHoras — Entrar</h1>
-    <nav id="menuUser"></nav>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
+    <div id="menuUser"></div>
   </header>
-
-  <main>
-    <form id="loginForm" onsubmit="return doLogin(event)">
-      <div class="form-row">
-        <label for="loginEmail">Email</label>
-        <input id="loginEmail" type="email" required>
-      </div>
-      <div class="form-row">
-        <label for="loginSenha">Senha</label>
-        <input id="loginSenha" type="password" required>
-      </div>
-      <div class="form-row">
-        <button class="btn" type="submit">Entrar</button>
-        <a href="cadastro.html" class="link">Criar conta</a>
-      </div>
-    </form>
+  <main class="container">
+    <div class="form">
+      <h1>Login</h1>
+      <label>Email:<input type="text" id="loginEmail"></label>
+      <label>Senha:<input type="password" id="loginSenha"></label>
+      <button class="btn" onclick="doLogin()">Entrar</button>
+      <p class="form-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
   </main>
-
-  <script>
-    function doLogin(event) {
-      event.preventDefault();
-      var email = document.getElementById('loginEmail').value;
-      var senha = document.getElementById('loginSenha').value;
-      var user = window.loginUser(email, senha);
-      if (user) {
-        if (user.tipo === 'empregador') window.location.href = 'empresa.html';
-        else window.location.href = 'funcionario.html';
-      }
-      return false;
-    }
-  </script>
-
   <script src="main.js"></script>
+  <script>
+    function doLogin() {
+      var email = document.getElementById('loginEmail').value.trim();
+      var senha = document.getElementById('loginSenha').value;
+      if (!email || !senha) { return showNotification('Preencha email e senha.', 'error'); }
+      var u = loginUser(email, senha);
+      if (u) {
+        window.location.href = 'index.html';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        showMenuUser();
+    });
+  </script>
 </body>
 </html>
