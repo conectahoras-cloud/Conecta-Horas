@@ -1,5 +1,35 @@
-<!DOCTYPE html><html lang='pt-br'><head><meta charset='utf-8'><title>Funcionário — ConectaHoras</title><link rel='stylesheet' href='main.css'></head>
-<body><div id='notification-container'></div><header class='topbar'><a href='index.html' class='brand'>ConectaHoras</a><nav></nav><div id='menuUser'></div></header>
-<main class='container'><h1>Área do Funcionário</h1><section class='form'><h3>Registrar Horas</h3><label>Data:<input type='date' id='horaData'></label><label>Horas:<input type='number' id='horaQuantidade'></label><button class='btn' onclick='registrarHoras()'>Registrar</button></section>
-<section><h2>Banco de Horas</h2><div id='listaHoras'></div></section><section><h2>Vagas Disponíveis</h2><div id='listaVagas'></div></section></main>
-<script src='main.js'></script><script>document.addEventListener('DOMContentLoaded',()=>{var u=getSessionUser();if(!u||u.tipo!=='funcionario'){showNotification('Acesso negado.','error');window.location.href='login.html';return;}renderMinhasHoras();renderVagasList(loadData('ch_vagas'),'listaVagas',true);showMenuUser();});</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Sua Área — ConectaHoras</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">ConectaHoras</div>
+    <nav>
+        <button class="btn" onclick="sair()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 id="bemvindo" style="text-align: left;"></h1>
+    
+    <section>
+      <h2>Vagas Disponíveis</h2>
+      <div id="listaVagas">
+        </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+  <script>
+    // Script de inicialização desta página
+    document.addEventListener('DOMContentLoaded', function() {
+        mostrarBoasVindas();
+        renderVagasList('listaVagas');
+    });
+  </script>
+</body>
+</html>
