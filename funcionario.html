@@ -2,28 +2,25 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área do Funcionário</title>
+  <title>Área do Funcionário — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">ConectaHoras</div>
-    <nav>
-      <button class="btn" onclick="sair()">Sair</button>
-    </nav>
+    <nav><button class="btn" onclick="sair()">Sair</button></nav>
   </header>
 
   <main class="container">
     <h1 id="bemvindo"></h1>
 
-    <section class="box">
+    <section>
       <h2>Banco de Horas</h2>
-      <p>Total de horas registradas: <strong id="horas">0</strong></p>
-      <button class="btn" onclick="registrarHora()">Registrar Hora</button>
+      <p>Total de horas trabalhadas: <span id="horas">0</span></p>
+      <button class="btn" onclick="adicionarHora()">+1 hora</button>
     </section>
 
-    <section class="box">
+    <section>
       <h2>Vagas Disponíveis</h2>
       <div id="listaVagas"></div>
     </section>
@@ -31,7 +28,10 @@
 
   <script src="main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', iniciarFuncionario);
+    document.addEventListener('DOMContentLoaded', () => {
+      mostrarBoasVindas();
+      renderVagasList('listaVagas');
+    });
   </script>
 </body>
 </html>

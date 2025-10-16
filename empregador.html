@@ -2,30 +2,27 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área do Empregador</title>
+  <title>Área do Empregador — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">ConectaHoras</div>
-    <nav>
-      <button class="btn" onclick="sair()">Sair</button>
-    </nav>
+    <nav><button class="btn" onclick="sair()">Sair</button></nav>
   </header>
 
   <main class="container">
     <h1 id="bemvindo"></h1>
 
-    <section class="box">
+    <section>
       <h2>Cadastrar Nova Vaga</h2>
-      <input type="text" id="tituloVaga" placeholder="Título da vaga">
-      <input type="text" id="empresaVaga" placeholder="Nome da empresa">
-      <input type="text" id="descricaoVaga" placeholder="Descrição da vaga">
+      <input type="text" id="tituloVaga" placeholder="Título da vaga"><br>
+      <input type="text" id="empresaVaga" placeholder="Nome da empresa"><br>
+      <textarea id="descricaoVaga" placeholder="Descrição da vaga"></textarea><br>
       <button class="btn" onclick="cadastrarVaga()">Cadastrar Vaga</button>
     </section>
 
-    <section class="box">
+    <section>
       <h2>Vagas Cadastradas</h2>
       <div id="listaVagasEmpregador"></div>
     </section>
@@ -33,7 +30,10 @@
 
   <script src="main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', iniciarEmpregador);
+    document.addEventListener('DOMContentLoaded', () => {
+      mostrarBoasVindas();
+      renderVagasEmpregador('listaVagasEmpregador');
+    });
   </script>
 </body>
 </html>

@@ -2,8 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ConectaHoras — Login</title>
+  <title>Login — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
@@ -12,11 +11,12 @@
   </header>
 
   <main class="container">
-    <h1>Login / Cadastro</h1>
-    <p>Digite seu nome e selecione o tipo de usuário:</p>
+    <h1>Entrar na sua conta</h1>
+    <input type="text" id="nomeUsuario" placeholder="Seu nome" required><br>
+    <input type="email" id="emailUsuario" placeholder="Seu e-mail"><br>
+    <input type="password" id="senhaUsuario" placeholder="Sua senha"><br>
 
-    <input type="text" id="nomeUsuario" placeholder="Seu nome completo">
-    <div>
+    <div class="login-buttons">
       <button class="btn" onclick="entrar('funcionario')">Entrar como Funcionário</button>
       <button class="btn" onclick="entrar('empregador')">Entrar como Empregador</button>
     </div>

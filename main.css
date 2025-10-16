@@ -19,11 +19,6 @@ body {
   font-weight: bold;
 }
 
-nav {
-  display: flex;
-  gap: 10px;
-}
-
 .btn {
   background-color: #38bdf8;
   color: #111827;
@@ -45,35 +40,39 @@ nav {
   justify-content: center;
   align-items: center;
   text-align: center;
-  flex-direction: column;
-  padding: 2rem;
+  color: #fff;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.6);
+  padding: 3rem;
+  border-radius: 10px;
 }
 
 .container {
-  max-width: 700px;
-  margin: 3rem auto;
+  max-width: 600px;
+  margin: 4rem auto;
   text-align: center;
 }
 
-input {
+input, textarea {
+  width: 80%;
   padding: 10px;
   border-radius: 5px;
   border: none;
-  width: 80%;
   margin: 10px 0;
 }
 
-.box {
+.vaga {
   background-color: #1f2937;
-  padding: 1.5rem;
-  border-radius: 10px;
-  margin-top: 1.5rem;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  text-align: left;
 }
 
-.vaga {
-  background-color: #374151;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-  text-align: left;
+.login-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
