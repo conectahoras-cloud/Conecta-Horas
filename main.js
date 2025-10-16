@@ -1,15 +1,81 @@
-/* main.js - versão completa resumida para o pacote final */
-function loadData(k){return JSON.parse(localStorage.getItem(k))||[];}function saveData(k,d){localStorage.setItem(k,JSON.stringify(d));}
-function getSessionUser(){return JSON.parse(sessionStorage.getItem('ch_session'))||null;}function setSessionUser(u){sessionStorage.setItem('ch_session',JSON.stringify(u));}
-function clearSessionUser(){sessionStorage.removeItem('ch_session');}function showNotification(m,t){let c=document.getElementById('notification-container');if(!c){c=document.createElement('div');c.id='notification-container';document.body.appendChild(c);}let n=document.createElement('div');n.className='notification '+t;n.innerText=m;c.appendChild(n);setTimeout(()=>n.remove(),4000);}
-function registerUser(n,e,s,t){let u=loadData('ch_users');if(u.find(x=>x.email===e)){showNotification('Email já existe.','error');return false;}let nu={id:'u_'+Date.now(),nome:n,email:e,senha:s,tipo:t};u.push(nu);saveData('ch_users',u);showNotification('Cadastrado!','success');return true;}
-function loginUser(e,s){let u=loadData('ch_users').find(x=>x.email===e&&x.senha===s);if(!u){showNotification('Credenciais incorretas.','error');return null;}setSessionUser(u);showNotification('Bem-vindo '+u.nome,'success');return u;}
-function logout(){clearSessionUser();window.location.href='index.html';}
-function showMenuUser(){let nav=document.querySelector('.topbar nav'),mu=document.getElementById('menuUser'),u=getSessionUser();if(!nav||!mu)return;if(u){mu.innerHTML='Olá, '+u.nome+' <button onclick="logout()" class="btn">Sair</button>';nav.innerHTML='<a href="index.html">Início</a>'+(u.tipo==='funcionario'?'<a href="funcionario.html">Área</a>':'<a href="empresa.html">Área</a>');}else{mu.innerHTML='<a href="login.html" class="btn">Login</a>';nav.innerHTML='<a href="index.html">Início</a><a href="cadastro.html">Cadastro</a>';}};
-function publicarVaga(t,d,s,c){let u=getSessionUser();if(!u||u.tipo!=='empregador'){showNotification('Acesso negado.','error');return false;}let v=loadData('ch_vagas');v.unshift({id:'v_'+Date.now(),titulo:t,descricao:d,salario:s,carga:c,empregadorId:u.id,empregadorNome:u.nome,candidatos:[]});saveData('ch_vagas',v);showNotification('Vaga publicada!','success');return true;}
-function renderVagasList(v,id,a){let el=document.getElementById(id);if(!el)return;if(!v||v.length==0){el.innerHTML='<p>Nenhuma vaga.</p>';return;}let u=getSessionUser();el.innerHTML=v.map(x=>`<div class='vaga'><h4>${x.titulo}</h4><p>${x.descricao}</p><p>Salário:${x.salario||'A combinar'}</p>${a&&u&&u.tipo==='funcionario'?`<button class='btn' onclick="candidatarSe('${x.id}')">Candidatar-se</button>`:''}</div>`).join('');}
-function candidatarSe(id){let u=getSessionUser();if(!u||u.tipo!=='funcionario')return showNotification('Acesso negado.','error');let v=loadData('ch_vagas');let vaga=v.find(x=>x.id===id);if(!vaga)return showNotification('Vaga não encontrada.','error');if(vaga.candidatos.includes(u.id))return showNotification('Já se candidatou.','error');vaga.candidatos.push(u.id);saveData('ch_vagas',v);showNotification('Candidatura enviada!','success');}
-function renderVagasComCandidatos(i,id){let v=loadData('ch_vagas').filter(x=>x.empregadorId===i),el=document.getElementById(id);if(!el)return;if(v.length==0){el.innerHTML='<p>Sem vagas.</p>';return;}let u=loadData('ch_users');el.innerHTML=v.map(x=>`<div class='vaga'><h4>${x.titulo}</h4><p>Candidatos:${x.candidatos.length}</p><ul>${x.candidatos.map(c=>'<li>'+((u.find(z=>z.id===c)||{}).nome||'N/A')+'</li>').join('')}</ul></div>`).join('');}
-function registrarHoras(){let u=getSessionUser();if(!u||u.tipo!=='funcionario')return showNotification('Acesso negado.','error');let d=horaData.value,h=parseFloat(horaQuantidade.value);if(!d||h<=0)return showNotification('Dados inválidos.','error');let hrs=loadData('ch_horas');hrs.push({id:'h_'+Date.now(),userId:u.id,data:d,horas:h});saveData('ch_horas',hrs);showNotification('Horas registradas!','success');renderMinhasHoras();}
-function renderMinhasHoras(){let u=getSessionUser(),el=document.getElementById('listaHoras');if(!el||!u)return;let hrs=loadData('ch_horas').filter(x=>x.userId===u.id);if(hrs.length==0){el.innerHTML='<p>Nenhum registro.</p>';return;}let total=hrs.reduce((a,b)=>a+b.horas,0);el.innerHTML='<table><tr><th>Data</th><th>Horas</th></tr>'+hrs.map(x=>`<tr><td>${x.data}</td><td>${x.horas}</td></tr>`).join('')+`<tr><td><b>Total</b></td><td><b>${total}</b></td></tr></table>`;}
-document.addEventListener('DOMContentLoaded',showMenuUser);
+/* main.js - Lógica SUPER SIMPLIFICADA, 100% fiel aos PDFs */
+
+// Variável global para guardar o nome do usuário logado [Conceito dos PDFs]
+var nomeUsuarioLogado = null;
+
+// As vagas agora são "fictícias" e ficam aqui.
+var vagas = [
+    { titulo: 'Desenvolvedor Front-End Jr.', empresa: 'Tech Inova', descricao: 'Trabalhar com HTML, CSS e JavaScript.' },
+    { titulo: 'Designer Gráfico', empresa: 'Agência Criativa', descricao: 'Criar artes para mídias sociais.' }
+];
+
+// --- FUNÇÕES PRINCIPAIS DO SITE ---
+
+// Função chamada pelo botão "Entrar" na página inicial.
+function entrar() {
+    var nomeInput = document.getElementById('nomeUsuario');
+    var nomeDigitado = nomeInput.value;
+
+    if (nomeDigitado === '') {
+        alert('Por favor, digite seu nome!');
+        return;
+    }
+
+    // Guarda o nome na nossa variável global
+    nomeUsuarioLogado = nomeDigitado;
+    // Redireciona para a página do funcionário
+    window.location.href = 'funcionario.html';
+}
+
+// Função para sair (logout).
+function sair() {
+    nomeUsuarioLogado = null; // Limpa a variável
+    alert('Você saiu.');
+    window.location.href = 'index.html';
+}
+
+// Função para mostrar a mensagem de boas-vindas.
+function mostrarBoasVindas() {
+    // Para esta função funcionar na outra página, precisamos de um truque.
+    // Vamos passar o nome pela URL.
+    var urlParams = new URLSearchParams(window.location.search);
+    var nome = urlParams.get('nome');
+    
+    var el = document.getElementById('bemvindo');
+    
+    if (!nome) {
+        // Se não tiver nome, protege a página.
+        alert('Acesso negado. Por favor, entre com seu nome.');
+        window.location.href = 'index.html';
+        return;
+    }
+    
+    el.innerHTML = 'Olá, <strong>' + nome + '</strong>! Bem-vindo(a) à sua área.';
+}
+
+// Função para "desenhar" a lista de vagas na tela.
+function renderVagasList(containerId) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+
+    var html = '';
+    for (var i = 0; i < vagas.length; i++) {
+        var v = vagas[i];
+        html += '<div class="vaga">';
+        html += '<h4>' + v.titulo + '</h4>';
+        html += '<p><strong>Empresa:</strong> ' + v.empresa + '</p>';
+        html += '<p>' + v.descricao + '</p>';
+        html += '<button class="btn" onclick="candidatarSe(\'' + v.titulo + '\')">Candidatar-se</button>';
+        html += '</div>';
+    }
+    el.innerHTML = html;
+}
+
+// Função chamada pelo botão "Candidatar-se".
+function candidatarSe(tituloVaga) {
+    // Como a variável global se perde ao mudar de página, pegamos o nome da URL de novo.
+    var urlParams = new URLSearchParams(window.location.search);
+    var nome = urlParams.get('nome');
+    
+    alert(nome + ', sua candidatura para a vaga "' + tituloVaga + '" foi enviada com sucesso!');
+}
