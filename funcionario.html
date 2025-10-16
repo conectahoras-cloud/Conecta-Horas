@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>Área do Funcionário — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
@@ -14,22 +14,13 @@
   </header>
 
   <main class="container">
-    <h1 id="bemvindo">Olá!</h1>
-
-    <section>
-      <h2>Banco de Horas</h2>
-      <p id="bancoHoras">0 horas</p>
-      <button class="btn" onclick="adicionarHora()">+1 hora</button>
-      <button class="btn" onclick="zerarHoras()">Zerar Horas</button>
-    </section>
+    <h1 id="bemvindo"></h1>
+    <p>Bem-vindo à área do funcionário.</p>
   </main>
 
   <script src="main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      mostrarBoasVindas();
-      atualizarBancoHoras();
-    });
+    document.addEventListener('DOMContentLoaded', mostrarBoasVindas);
   </script>
 </body>
 </html>
