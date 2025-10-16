@@ -1,60 +1,50 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Área do Funcionário — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header>
-    <h1>Painel do Funcionário</h1>
-    <nav id="menuUser"></nav>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
+    <div id="menuUser"></div>
   </header>
-
-  <main>
+  <main class="container">
+    <h1>Área do Funcionário</h1>
+    <div id="bemvindo" class="small" style="text-align: center; margin-bottom: 2rem;"></div>
+    <section class="form">
+      <h3>Registrar Horas Trabalhadas</h3>
+      <label>Data: <input type="date" id="horaData"></label>
+      <label>Horas: <input type="number" id="horaQuantidade" placeholder="8"></label>
+      <button class="btn" onclick="registrarHoras()">Registrar</button>
+    </section>
+    <section style="margin-top: 2rem;">
+      <h2>Meu Banco de Horas</h2>
+      <div id="listaHoras"></div>
+    </section>
+    <hr style="margin: 2rem 0; border-color: var(--border-color);">
     <section>
       <h2>Vagas Disponíveis</h2>
       <div id="listaVagas"></div>
     </section>
-
-    <section>
-      <h2>Registrar Horas</h2>
-      <form id="formHoras" onsubmit="return doRegistrarHoras(event)">
-        <div class="form-row">
-          <label for="horaData">Data</label>
-          <input id="horaData" type="date" required>
-        </div>
-        <div class="form-row">
-          <label for="horaQuantidade">Horas</label>
-          <input id="horaQuantidade" type="number" step="0.25" required>
-        </div>
-        <div class="form-row">
-          <button class="btn" type="submit">Registrar</button>
-        </div>
-      </form>
-      <div id="listaHoras"></div>
-    </section>
   </main>
-
+  <script src="main.js"></script>
   <script>
-    function doRegistrarHoras(event) {
-      event.preventDefault();
-      if (window.registrarHoras()) formHoras.reset();
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
-      window.showMenuUser();
-      var u = window.getSessionUser();
-      if (!u || u.tipo !== 'funcionario') {
-        window.location.href = 'login.html';
-        return;
-      }
-      window.renderVagasList(window.loadData('ch_vagas'), 'listaVagas', true);
-      window.renderMinhasHoras();
+        var u = getSessionUser();
+        if (!u || u.tipo !== 'funcionario') {
+            showNotification('Acesso negado. Faça login como funcionário.', 'error');
+            window.location.href = 'login.html';
+            return;
+        }
+        document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + '! Gerencie suas horas e candidaturas aqui.';
+        renderMinhasHoras();
+        renderVagasList(loadData('ch_vagas'), 'listaVagas', true);
+        showMenuUser();
     });
   </script>
-
-  <script src="main.js"></script>
 </body>
 </html>
