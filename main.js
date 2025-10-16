@@ -1,56 +1,97 @@
-// Salva e mostra apenas o nome do usuário
-
-function cadastrar(tipo) {
-  const nome = document.getElementById('nomeUsuario').value.trim();
-
-  if (nome === '') {
-    alert('Digite seu nome!');
-    return;
-  }
-
-  localStorage.setItem('nomeUsuario', nome);
-  localStorage.setItem('tipoUsuario', tipo);
-
-  if (tipo === 'funcionario') {
-    window.location.href = 'funcionario.html';
-  } else {
-    window.location.href = 'empresa.html';
-  }
-}
+// main.js — Lógica principal do ConectaHoras
+var vagas = [
+  { titulo: 'Desenvolvedor Front-End Jr.', empresa: 'Tech Inova', descricao: 'Trabalhar com HTML, CSS e JavaScript.' },
+  { titulo: 'Designer Gráfico', empresa: 'Agência Criativa', descricao: 'Criar artes para mídias sociais.' }
+];
 
 function entrar(tipo) {
-  const nome = document.getElementById('nomeUsuario').value.trim();
-
+  var nome = document.getElementById('nomeUsuario').value;
   if (nome === '') {
-    alert('Digite seu nome!');
+    alert('Por favor, digite seu nome!');
     return;
   }
-
   localStorage.setItem('nomeUsuario', nome);
   localStorage.setItem('tipoUsuario', tipo);
-
   if (tipo === 'funcionario') {
     window.location.href = 'funcionario.html';
   } else {
-    window.location.href = 'empresa.html';
+    window.location.href = 'empregador.html';
   }
-}
-
-function mostrarBoasVindas() {
-  const nome = localStorage.getItem('nomeUsuario');
-  const tipo = localStorage.getItem('tipoUsuario');
-
-  if (!nome || !tipo) {
-    alert('Acesso negado! Volte à página de login.');
-    window.location.href = 'login.html';
-    return;
-  }
-
-  document.getElementById('bemvindo').innerHTML = `Olá, <strong>${nome}</strong>!`;
 }
 
 function sair() {
-  localStorage.removeItem('nomeUsuario');
-  localStorage.removeItem('tipoUsuario');
+  localStorage.clear();
   window.location.href = 'index.html';
+}
+
+function iniciarFuncionario() {
+  var nome = localStorage.getItem('nomeUsuario');
+  if (!nome) {
+    alert('Por favor, faça login primeiro!');
+    window.location.href = 'login.html';
+    return;
+  }
+  document.getElementById('bemvindo').innerHTML = 'Olá, ' + nome + '!';
+  renderVagas('listaVagas');
+}
+
+function iniciarEmpregador() {
+  var nome = localStorage.getItem('nomeUsuario');
+  if (!nome) {
+    alert('Por favor, faça login primeiro!');
+    window.location.href = 'login.html';
+    return;
+  }
+  document.getElementById('bemvindo').innerHTML = 'Bem-vindo(a), ' + nome + '!';
+  renderVagasEmpregador();
+}
+
+function registrarHora() {
+  var el = document.getElementById('horas');
+  var atual = parseInt(el.textContent);
+  el.textContent = atual + 1;
+}
+
+function renderVagas(containerId) {
+  var el = document.getElementById(containerId);
+  var html = '';
+  for (var i = 0; i < vagas.length; i++) {
+    var v = vagas[i];
+    html += '<div class="vaga">';
+    html += '<h3>' + v.titulo + '</h3>';
+    html += '<p><strong>Empresa:</strong> ' + v.empresa + '</p>';
+    html += '<p>' + v.descricao + '</p>';
+    html += '<button class="btn" onclick="alert(\'Candidatura enviada!\')">Candidatar-se</button>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function cadastrarVaga() {
+  var titulo = document.getElementById('tituloVaga').value;
+  var empresa = document.getElementById('empresaVaga').value;
+  var descricao = document.getElementById('descricaoVaga').value;
+  if (titulo === '' || empresa === '' || descricao === '') {
+    alert('Preencha todos os campos!');
+    return;
+  }
+  vagas.push({ titulo: titulo, empresa: empresa, descricao: descricao });
+  renderVagasEmpregador();
+  document.getElementById('tituloVaga').value = '';
+  document.getElementById('empresaVaga').value = '';
+  document.getElementById('descricaoVaga').value = '';
+}
+
+function renderVagasEmpregador() {
+  var el = document.getElementById('listaVagasEmpregador');
+  var html = '';
+  for (var i = 0; i < vagas.length; i++) {
+    var v = vagas[i];
+    html += '<div class="vaga">';
+    html += '<h3>' + v.titulo + '</h3>';
+    html += '<p><strong>Empresa:</strong> ' + v.empresa + '</p>';
+    html += '<p>' + v.descricao + '</p>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
 }

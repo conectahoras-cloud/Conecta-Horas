@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Área do Funcionário</title>
+  <title>Área do Empregador</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
@@ -18,20 +18,22 @@
     <h1 id="bemvindo"></h1>
 
     <section class="box">
-      <h2>Banco de Horas</h2>
-      <p>Total de horas registradas: <strong id="horas">0</strong></p>
-      <button class="btn" onclick="registrarHora()">Registrar Hora</button>
+      <h2>Cadastrar Nova Vaga</h2>
+      <input type="text" id="tituloVaga" placeholder="Título da vaga">
+      <input type="text" id="empresaVaga" placeholder="Nome da empresa">
+      <input type="text" id="descricaoVaga" placeholder="Descrição da vaga">
+      <button class="btn" onclick="cadastrarVaga()">Cadastrar Vaga</button>
     </section>
 
     <section class="box">
-      <h2>Vagas Disponíveis</h2>
-      <div id="listaVagas"></div>
+      <h2>Vagas Cadastradas</h2>
+      <div id="listaVagasEmpregador"></div>
     </section>
   </main>
 
   <script src="main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', iniciarFuncionario);
+    document.addEventListener('DOMContentLoaded', iniciarEmpregador);
   </script>
 </body>
 </html>
