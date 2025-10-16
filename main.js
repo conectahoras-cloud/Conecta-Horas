@@ -1,46 +1,50 @@
-/* main.js — versão simples com localStorage para salvar banco de horas */
+// main.js — versão simples e funcional com localStorage
 
-// Variável global para guardar o nome
-var nomeUsuarioLogado = null;
-
-// Entrar
+// Entrar (na página inicial)
 function entrar() {
-  var nome = document.getElementById('nomeUsuario').value;
+  const nome = document.getElementById('nomeUsuario').value.trim();
   if (nome === '') {
     alert('Digite seu nome!');
     return;
   }
-  nomeUsuarioLogado = nome;
-  window.location.href = 'funcionario.html?nome=' + nome;
+  // Salva o nome na URL e vai para a página de funcionário
+  window.location.href = 'funcionario.html?nome=' + encodeURIComponent(nome);
 }
 
-// Mostrar mensagem e horas
+// Mostrar mensagem de boas-vindas
 function mostrarBoasVindas() {
-  var params = new URLSearchParams(window.location.search);
-  var nome = params.get('nome');
+  const params = new URLSearchParams(window.location.search);
+  const nome = params.get('nome');
+
   if (!nome) {
-    alert('Acesso negado. Volte à página inicial.');
+    alert('Acesso negado! Volte à página inicial.');
     window.location.href = 'index.html';
     return;
   }
-  document.getElementById('bemvindo').innerHTML = 'Olá, <strong>' + nome + '</strong>!';
 
-  var horas = localStorage.getItem('bancoDeHoras') || 0;
-  document.getElementById('bancoHoras').innerText = horas + ' horas registradas.';
+  const titulo = document.getElementById('bemvindo');
+  if (titulo) titulo.innerHTML = `Olá, <strong>${nome}</strong>! Bem-vindo(a) de volta.`;
 }
 
-// Adicionar hora
+// Atualiza o texto do banco de horas
+function atualizarBancoHoras() {
+  const horas = localStorage.getItem('bancoDeHoras') || 0;
+  const el = document.getElementById('bancoHoras');
+  if (el) el.innerText = `${horas} horas registradas.`;
+}
+
+// Adiciona uma hora ao banco
 function adicionarHora() {
-  var horas = parseInt(localStorage.getItem('bancoDeHoras') || 0);
+  let horas = parseInt(localStorage.getItem('bancoDeHoras') || 0);
   horas++;
   localStorage.setItem('bancoDeHoras', horas);
-  document.getElementById('bancoHoras').innerText = horas + ' horas registradas.';
+  atualizarBancoHoras();
 }
 
-// Zerar horas
+// Zera o banco de horas
 function zerarHoras() {
   localStorage.setItem('bancoDeHoras', 0);
-  document.getElementById('bancoHoras').innerText = '0 horas registradas.';
+  atualizarBancoHoras();
 }
 
 // Sair
