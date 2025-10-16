@@ -1,75 +1,65 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Área do Empregador — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header>
-    <h1>Painel do Empregador</h1>
-    <nav id="menuUser"></nav>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
+    <div id="menuUser"></div>
   </header>
-
-  <main>
-    <section>
-      <h2>Publicar Vaga</h2>
-      <form id="formVaga" onsubmit="return doPublicarVaga(event)">
-        <div class="form-row">
-          <label for="vagaTitulo">Título</label>
-          <input id="vagaTitulo" type="text" required>
-        </div>
-        <div class="form-row">
-          <label for="vagaDescricao">Descrição</label>
-          <textarea id="vagaDescricao" required></textarea>
-        </div>
-        <div class="form-row">
-          <label for="vagaSalario">Salário</label>
-          <input id="vagaSalario" type="text">
-        </div>
-        <div class="form-row">
-          <label for="vagaCarga">Carga</label>
-          <input id="vagaCarga" type="text">
-        </div>
-        <div class="form-row">
-          <button class="btn" type="submit">Publicar</button>
-        </div>
-      </form>
+  <main class="container">
+    <h1>Área do Empregador</h1>
+    <div id="bemvindo" class="small" style="text-align: center; margin-bottom: 2rem;"></div>
+    <section class="form">
+      <h3>Publicar nova vaga</h3>
+      <label>Título:<input type="text" id="vagaTitulo"></label>
+      <label>Descrição:<input type="text" id="vagaDescricao"></label>
+      <label>Salário (opcional):<input type="text" id="vagaSalario"></label>
+      <label>Carga horária (opcional):<input type="text" id="vagaCarga"></label>
+      <button class="btn" onclick="doPublicar()">Publicar vaga</button>
     </section>
-
-    <section>
-      <h2>Minhas Vagas</h2>
+    <section style="margin-top: 2rem;">
+      <h2>Minhas Vagas e Candidatos</h2>
       <div id="minhasVagas"></div>
     </section>
   </main>
-
+  <script src="main.js"></script>
   <script>
-    function doPublicarVaga(event) {
-      event.preventDefault();
-      var titulo = vagaTitulo.value;
-      var descricao = vagaDescricao.value;
-      var salario = vagaSalario.value;
-      var carga = vagaCarga.value;
-      if (window.publicarVaga(titulo, descricao, salario, carga)) {
-        formVaga.reset();
-        var u = window.getSessionUser();
-        if (u) window.renderVagasComCandidatos(u.id, 'minhasVagas');
+    function doPublicar() {
+      var titulo = document.getElementById('vagaTitulo').value.trim();
+      var desc = document.getElementById('vagaDescricao').value.trim();
+      var salario = document.getElementById('vagaSalario').value.trim();
+      var carga = document.getElementById('vagaCarga').value.trim();
+      if (!titulo || !desc) { return showNotification('Título e descrição são obrigatórios.', 'error'); }
+      if (publicarVaga(titulo, desc, salario, carga)) {
+        document.getElementById('vagaTitulo').value = '';
+        document.getElementById('vagaDescricao').value = '';
+        document.getElementById('vagaSalario').value = '';
+        document.getElementById('vagaCarga').value = '';
+        renderMinhasVagas();
       }
-      return false;
     }
-
+    function renderMinhasVagas() {
+      var u = getSessionUser();
+      if (!u) return;
+      renderVagasComCandidatos(u.id, 'minhasVagas');
+    }
     document.addEventListener('DOMContentLoaded', function() {
-      window.showMenuUser();
-      var u = window.getSessionUser();
-      if (!u || u.tipo !== 'empregador') {
-        window.location.href = 'login.html';
-        return;
-      }
-      window.renderVagasComCandidatos(u.id, 'minhasVagas');
+        var u = getSessionUser();
+        if (!u || u.tipo !== 'empregador') {
+            showNotification('Acesso negado. Faça login como empregador.', 'error');
+            window.location.href = 'login.html';
+            return;
+        }
+        document.getElementById('bemvindo').innerText = 'Olá, ' + u.nome + ' — publique e gerencie suas vagas.';
+        renderMinhasVagas();
+        showMenuUser();
     });
   </script>
-
-  <script src="main.js"></script>
 </body>
 </html>
