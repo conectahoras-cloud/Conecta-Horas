@@ -1,8 +1,26 @@
-<!DOCTYPE html><html lang='pt-br'><head><meta charset='utf-8'><title>Empregador — ConectaHoras</title><link rel='stylesheet' href='main.css'></head>
-<body><div id='notification-container'></div><header class='topbar'><a href='index.html' class='brand'>ConectaHoras</a><nav></nav><div id='menuUser'></div></header>
-<main class='container'><h1>Área do Empregador</h1><section class='form'><h3>Publicar Vaga</h3><label>Título:<input type='text' id='vagaTitulo'></label>
-<label>Descrição:<input type='text' id='vagaDescricao'></label><label>Salário:<input type='text' id='vagaSalario'></label><label>Carga:<input type='text' id='vagaCarga'></label>
-<button class='btn' onclick='doPublicar()'>Publicar</button></section><section><h2>Minhas Vagas</h2><div id='minhasVagas'></div></section></main>
-<script src='main.js'></script><script>function doPublicar(){var t=vagaTitulo.value.trim(),d=vagaDescricao.value.trim(),s=vagaSalario.value.trim(),c=vagaCarga.value.trim();if(!t||!d)return showNotification('Preencha título e descrição.','error');if(publicarVaga(t,d,s,c))renderMinhasVagas();}
-function renderMinhasVagas(){var u=getSessionUser();if(u)renderVagasComCandidatos(u.id,'minhasVagas');}
-document.addEventListener('DOMContentLoaded',()=>{var u=getSessionUser();if(!u||u.tipo!=='empregador'){showNotification('Acesso negado.','error');window.location.href='login.html';return;}renderMinhasVagas();showMenuUser();});</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Área do Empregador — ConectaHoras</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">ConectaHoras</div>
+    <nav>
+      <button class="btn" onclick="sair()">Sair</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 id="bemvindo"></h1>
+    <p>Bem-vindo à área da empresa.</p>
+  </main>
+
+  <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', mostrarBoasVindas);
+  </script>
+</body>
+</html>
