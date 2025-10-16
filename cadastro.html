@@ -1,58 +1,50 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Cadastro — ConectaHoras</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header>
-    <h1>ConectaHoras — Cadastro</h1>
-    <nav id="menuUser"></nav>
+  <div id="notification-container"></div>
+  <header class="topbar">
+    <a href="index.html" class="brand">ConectaHoras</a>
+    <nav></nav>
+    <div id="menuUser"></div>
   </header>
-
-  <main>
-    <form id="cadForm" onsubmit="return doRegister(event)">
-      <div class="form-row">
-        <label for="cadNome">Nome</label>
-        <input id="cadNome" type="text" required>
-      </div>
-      <div class="form-row">
-        <label for="cadEmail">Email</label>
-        <input id="cadEmail" type="email" required>
-      </div>
-      <div class="form-row">
-        <label for="cadSenha">Senha</label>
-        <input id="cadSenha" type="password" required>
-      </div>
-      <div class="form-row">
-        <label for="cadTipo">Tipo</label>
-        <select id="cadTipo" required>
+  <main class="container">
+    <div class="form">
+      <h1>Crie sua Conta</h1>
+      <label>Nome:<input type="text" id="cadNome"></label>
+      <label>Email:<input type="text" id="cadEmail"></label>
+      <label>Senha:<input type="password" id="cadSenha"></label>
+      <label>Tipo de Conta:
+        <select id="cadTipo">
           <option value="funcionario">Funcionário</option>
           <option value="empregador">Empregador</option>
         </select>
-      </div>
-      <div class="form-row">
-        <button class="btn" type="submit">Cadastrar</button>
-        <a href="login.html" class="link">Já tenho conta</a>
-      </div>
-    </form>
+      </label>
+      <button class="btn" onclick="doRegister()">Cadastrar</button>
+      <p class="form-link">Já tem uma conta? <a href="login.html">Faça login</a></p>
+    </div>
   </main>
-
+  <script src="main.js"></script>
   <script>
-    function doRegister(event) {
-      event.preventDefault();
-      var nome = document.getElementById('cadNome').value;
-      var email = document.getElementById('cadEmail').value;
+    function doRegister() {
+      var nome = document.getElementById('cadNome').value.trim();
+      var email = document.getElementById('cadEmail').value.trim();
       var senha = document.getElementById('cadSenha').value;
       var tipo = document.getElementById('cadTipo').value;
-      var ok = window.registerUser(nome, email, senha, tipo);
-      if (ok) window.location.href = 'login.html';
-      return false;
+      if (!nome || !email || !senha) { return showNotification('Preencha todos os campos.', 'error'); }
+      if (registerUser(nome, email, senha, tipo)) {
+        setTimeout(function() {
+          window.location.href = 'login.html';
+        }, 1000);
+      }
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        showMenuUser();
+    });
   </script>
-
-  <script src="main.js"></script>
 </body>
 </html>
