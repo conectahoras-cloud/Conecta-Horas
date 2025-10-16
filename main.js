@@ -1,38 +1,36 @@
-/* main.js - Lógica SIMPLIFICADA e focada nos PDFs */
+/* main.js - Lógica central do ConectaHoras (VERSÃO PROFISSIONAL) */
 
-// --- A ÚNICA PARTE "EXTRA": GUARDAR DADOS (localStorage) ---
-// Função para carregar dados do localStorage
-function loadData(key) {
-    var dadosEmTexto = localStorage.getItem(key);
-    if (dadosEmTexto) {
-        return JSON.parse(dadosEmTexto);
-    }
-    return []; // Se não houver nada, retorna um vetor vazio
-}
-// Função para salvar dados no localStorage
-function saveData(key, data) {
-    var dadosEmTexto = JSON.stringify(data);
-    localStorage.setItem(key, dadosEmTexto);
-}
-// Funções para a memória temporária do login
+// --- Helpers de storage ---
+function loadData(key) { return JSON.parse(localStorage.getItem(key)) || []; }
+function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
 function getSessionUser() { return JSON.parse(sessionStorage.getItem('ch_session')) || null; }
 function setSessionUser(user) { sessionStorage.setItem('ch_session', JSON.stringify(user)); }
 function clearSessionUser() { sessionStorage.removeItem('ch_session'); }
 
-// --- Funções de Usuário (usando alert()) ---
+// --- FUNÇÃO DE NOTIFICAÇÕES ---
+function showNotification(message, type) {
+    var container = document.getElementById('notification-container');
+    if (!container) { container = document.createElement('div'); container.id = 'notification-container'; document.body.appendChild(container); }
+    var notification = document.createElement('div');
+    notification.className = 'notification ' + type;
+    notification.innerText = message;
+    container.appendChild(notification);
+    setTimeout(function() { notification.remove(); }, 4000);
+}
+
+// --- Funções de usuário ---
 function registerUser(nome, email, senha, tipo) {
     var users = loadData('ch_users');
-    // Usando um loop 'for' para verificar se o email já existe [Conceito dos PDFs]
     for (var i = 0; i < users.length; i++) {
-        if (users[i].email === email) {
-            alert('Este email já está em uso.'); // Usando alert() [Conceito dos PDFs]
+        if (users[i].email.toLowerCase() === email.toLowerCase()) {
+            showNotification('Este email já está em uso.', 'error');
             return false;
         }
     }
     var u = { id: 'u_' + new Date().getTime(), nome: nome, email: email, senha: senha, tipo: tipo };
-    users.push(u); // Adicionando ao vetor [Conceito dos PDFs]
+    users.push(u);
     saveData('ch_users', users);
-    alert('Cadastro efetuado com sucesso! Faça o login.');
+    showNotification('Cadastro efetuado com sucesso! Faça o login.', 'success');
     return true;
 }
 
@@ -40,89 +38,109 @@ function loginUser(email, senha) {
     var users = loadData('ch_users');
     for (var i = 0; i < users.length; i++) {
         var u = users[i];
-        if (u.email === email && u.senha === senha) {
+        if (u.email.toLowerCase() === email.toLowerCase() && u.senha === senha) {
             setSessionUser(u);
-            alert('Login efetuado: ' + u.nome);
+            showNotification('Login bem-sucedido, ' + u.nome + '!', 'success');
             return u;
         }
     }
-    alert('Email ou senha incorretos.');
+    showNotification('Email ou senha incorretos.', 'error');
     return null;
 }
 
 function logout() {
     clearSessionUser();
-    alert('Você saiu da sessão.');
+    showNotification('Você saiu da sua conta.', 'success');
     window.location.href = 'index.html';
 }
+
+// --- A FUNÇÃO DE MENU DINÂMICO ---
+function showMenuUser() {
+    var navContainer = document.querySelector('.topbar nav');
+    var userMenuContainer = document.getElementById('menuUser');
+    var u = getSessionUser();
+
+    if (!navContainer || !userMenuContainer) return;
+
+    if (u) { // Se TEM um usuário logado
+        userMenuContainer.innerHTML = 'Logado: <strong>' + u.nome + '</strong> <button onclick="logout()" class="btn secondary">Sair</button>';
+        
+        if (u.tipo === 'funcionario') {
+            navContainer.innerHTML = '<a href="index.html">Início</a>' +
+                                     '<a href="funcionario.html">Minha Área</a>';
+        } else if (u.tipo === 'empregador') {
+            navContainer.innerHTML = '<a href="index.html">Início</a>' +
+                                     '<a href="empresa.html">Minha Área</a>';
+        }
+
+    } else { // Se NÃO TEM ninguém logado
+        userMenuContainer.innerHTML = '<a href="login.html" class="btn">Login</a>';
+        navContainer.innerHTML = '<a href="index.html">Início</a>' +
+                                 '<a href="cadastro.html">Cadastre-se</a>';
+    }
+}
+
 
 // --- Funções de Vagas ---
 function publicarVaga(titulo, descricao, salario, carga) {
     var u = getSessionUser();
-    // Proteção de página com 'if' [Conceito dos PDFs]
-    if (!u || u.tipo !== 'empregador') {
-        alert('Acesso negado. Apenas empregadores podem publicar vagas.');
-        return false;
+    if (!u || u.tipo !== 'empregador') { 
+        showNotification('Acesso negado.', 'error');
+        return false; 
     }
     var vagas = loadData('ch_vagas');
     var vaga = { id: 'v_' + new Date().getTime(), titulo: titulo, descricao: descricao, salario: salario, carga: carga, empregadorId: u.id, empregadorNome: u.nome, candidatos: [] };
-    vagas.unshift(vaga); // Adiciona a nova vaga no início da lista
+    vagas.unshift(vaga);
     saveData('ch_vagas', vagas);
-    alert('Vaga publicada com sucesso!');
+    showNotification('Vaga publicada com sucesso!', 'success');
     return true;
 }
 
 function candidatarSe(vagaId) {
     var u = getSessionUser();
-    if (!u || u.tipo !== 'funcionario') {
-        alert('Faça login como funcionário para se candidatar.');
-        return false;
+    if (!u || u.tipo !== 'funcionario') { 
+        showNotification('Faça login como funcionário para se candidatar.', 'error');
+        return false; 
     }
     var vagas = loadData('ch_vagas');
-    for (var i = 0; i < vagas.length; i++) {
-        if (vagas[i].id === vagaId) {
-            var jaCandidatado = false;
-            for (var j = 0; j < vagas[i].candidatos.length; j++) {
-                if (vagas[i].candidatos[j] === u.id) {
-                    jaCandidatado = true;
-                    break;
-                }
-            }
-            if (jaCandidatado) {
-                alert('Você já se candidatou a esta vaga.');
-                return false;
-            }
-            vagas[i].candidatos.push(u.id);
-            saveData('ch_vagas', vagas);
-            alert('Candidatura enviada!');
-            return true;
-        }
+    var vagaEncontrada = null;
+    for(var i = 0; i < vagas.length; i++) { if (vagas[i].id === vagaId) { vagaEncontrada = vagas[i]; break; } }
+    if (vagaEncontrada) {
+        if (vagaEncontrada.candidatos.indexOf(u.id) !== -1) { showNotification('Você já se candidatou a esta vaga.', 'error'); return false; }
+        vagaEncontrada.candidatos.push(u.id);
+        saveData('ch_vagas', vagas);
+        showNotification('Candidatura enviada!', 'success');
+        return true;
     }
-    alert('Vaga não encontrada.');
+    showNotification('Erro: Vaga não encontrada.', 'error');
     return false;
 }
 
 // --- Funções do Banco de Horas ---
 function registrarHoras() {
     var u = getSessionUser();
+    if (!u || u.tipo !== 'funcionario') {
+        showNotification('Acesso negado.', 'error');
+        return;
+    }
     var data = document.getElementById('horaData').value;
     var horas = document.getElementById('horaQuantidade').value;
     if (!data || !horas || horas <= 0) {
-        alert('Por favor, preencha a data e uma quantidade de horas válida.');
+        showNotification('Preencha a data e uma quantidade de horas válida.', 'error');
         return;
     }
     var horasDb = loadData('ch_horas');
     var registro = { id: 'h_' + new Date().getTime(), userId: u.id, data: data, horas: parseFloat(horas) };
     horasDb.push(registro);
     saveData('ch_horas', horasDb);
-    alert('Horas registradas com sucesso!');
+    showNotification('Horas registradas com sucesso!', 'success');
     renderMinhasHoras();
 }
 
-// --- Funções para "Desenhar" na Tela (Renderização) ---
 function renderMinhasHoras() {
     var u = getSessionUser();
     var el = document.getElementById('listaHoras');
+    if (!el || !u) return;
     var horasDb = loadData('ch_horas');
     var minhasHoras = [];
     for (var i = 0; i < horasDb.length; i++) {
@@ -144,18 +162,22 @@ function renderMinhasHoras() {
     el.innerHTML = html;
 }
 
+// --- Funções de renderização de listas ---
 function renderVagasList(vagas, containerId, allowApply) {
     var el = document.getElementById(containerId);
-    if (!vagas || vagas.length === 0) {
-        el.innerHTML = '<p class="small" style="text-align: center;">Nenhuma vaga encontrada no momento.</p>';
-        return;
+    if (!el) return;
+    if (!vagas || vagas.length === 0) { 
+        el.innerHTML = '<p class="small" style="text-align: center;">Nenhuma vaga encontrada no momento.</p>'; 
+        return; 
     }
     var html = '';
     for (var i = 0; i < vagas.length; i++) {
         var v = vagas[i];
-        html += '<div class="vaga"><h4>' + v.titulo + '</h4>' +
-                '<p><strong>Empresa:</strong> ' + (v.empregadorNome || 'N/A') + '</p>' +
-                '<p>' + v.descricao + '</p>';
+        html += '<div class="vaga">';
+        html += '<h4>' + v.titulo + '</h4>';
+        html += '<p><strong>Empresa:</strong> ' + (v.empregadorNome || 'N/A') + '</p>';
+        html += '<p>' + v.descricao + '</p>';
+        html += '<p class="small">Salário: ' + (v.salario || 'A combinar') + ' · Carga Horária: ' + (v.carga || 'Não informada') + '</p>';
         if (allowApply) {
             var u = getSessionUser();
             if (u && u.tipo === 'funcionario') {
@@ -170,32 +192,23 @@ function renderVagasList(vagas, containerId, allowApply) {
 function renderVagasComCandidatos(empId, containerId) {
     var todasVagas = loadData('ch_vagas');
     var minhasVagas = [];
-    for (var i = 0; i < todasVagas.length; i++) {
-        if (todasVagas[i].empregadorId === empId) {
-            minhasVagas.push(todasVagas[i]);
-        }
-    }
+    for (var i = 0; i < todasVagas.length; i++) { if (todasVagas[i].empregadorId === empId) { minhasVagas.push(todasVagas[i]); } }
     var el = document.getElementById(containerId);
-    if (minhasVagas.length === 0) {
-        el.innerHTML = '<div class="small">Você não publicou vagas ainda.</div>';
-        return;
-    }
+    if (!el) return;
+    if (minhasVagas.length === 0) { el.innerHTML = '<div class="small">Você não publicou vagas ainda.</div>'; return; }
     var users = loadData('ch_users');
     var html = '';
     for (var i = 0; i < minhasVagas.length; i++) {
         var v = minhasVagas[i];
-        html += '<div class="vaga"><h4>' + v.titulo + '</h4><p class="small">Candidatos: ' + v.candidatos.length + '</p>';
+        html += '<div class="vaga">';
+        html += '<h4>' + v.titulo + '</h4>';
+        html += '<p class="small">Candidatos inscritos: ' + v.candidatos.length + '</p>';
         if (v.candidatos.length > 0) {
             html += '<ul>';
             for (var j = 0; j < v.candidatos.length; j++) {
                 var candidatoId = v.candidatos[j];
                 var candidatoNome = 'Usuário não encontrado';
-                for (var k = 0; k < users.length; k++) {
-                    if (users[k].id === candidatoId) {
-                        candidatoNome = users[k].nome;
-                        break;
-                    }
-                }
+                for (var k = 0; k < users.length; k++) { if (users[k].id === candidatoId) { candidatoNome = users[k].nome; break; } }
                 html += '<li>' + candidatoNome + '</li>';
             }
             html += '</ul>';
