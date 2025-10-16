@@ -1,41 +1,119 @@
-:root{
-  --bg:#ffffff;
-  --text:#222;
-  --muted:#666;
-  --primary:#0b74de;
-  --success:#1fa055;
-  --error:#d9534f;
-  --card:#f7f7f7;
+/* --- TEMA DARK DASHBOARD --- */
+:root {
+    --bg-dark: #111827;
+    --bg-panel: #1f2937;
+    --border-color: #374151;
+    --primary-color: #38bdf8;
+    --text-light: #d1d5db;
+    --text-muted: #9ca3af;
+    --success: #10b981;
+    --danger: #ef4444;
+    --white: #fff;
 }
-
-*{box-sizing:border-box}
-html,body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text); line-height:1.4}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #eee;background:linear-gradient(90deg,#fff,#f9f9ff)}
-main{padding:20px;max-width:960px;margin:0 auto}
-footer{padding:12px 20px;text-align:center;color:var(--muted);border-top:1px solid #eee}
-
-nav#menuUser .menu-user{display:flex;align-items:center;gap:8px}
-.menu-user span{font-weight:600}
-.menu-user a{color:var(--primary);text-decoration:none}
-.link{margin-left:12px;color:var(--primary);text-decoration:none}
-
-.form-row{margin-bottom:12px;display:flex;flex-direction:column}
-.form-row label{font-size:14px;margin-bottom:6px}
-.form-row input,textarea,select{padding:8px;border:1px solid #ddd;border-radius:6px;font-size:14px}
-textarea{min-height:90px;resize:vertical}
-
-.btn{background:var(--primary);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-.btn[disabled]{opacity:0.6;cursor:not-allowed}
-
-.vaga{background:var(--card);padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid #eee}
-.vaga h4{margin:0 0 6px 0}
-.small{font-size:13px;color:var(--muted)}
-
-table{width:100%;border-collapse:collapse;margin-top:8px}
-thead th{background:#fafafa;text-align:left;padding:8px;border-bottom:1px solid #eee}
-tbody td{padding:8px;border-bottom:1px solid #f1f1f1}
-
-#notification-container{position:fixed;right:16px;top:16px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.notification{padding:10px 12px;border-radius:8px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
-.notification.success{background:var(--success)}
-.notification.error{background:var(--error)}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+/* --- BARRA DE NAVEGAÇÃO --- */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-color);
+}
+.brand { font-weight: bold; color: var(--primary-color); font-size: 1.5rem; text-decoration: none; }
+.topbar nav a { color: var(--text-muted); text-decoration: none; margin-right: 1.5rem; font-weight: 500; }
+.topbar nav a:hover { color: var(--white); }
+.menu-user { color: var(--text-muted); font-size: 0.9rem; display: flex; align-items: center; }
+.menu-user .btn { margin-left: 0.5rem; padding: 5px 10px; font-size: 0.8rem; background-color: var(--primary-color); color: var(--bg-dark); }
+/* --- CONTEÚDO --- */
+.container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+h1, h2, h3 { color: #fff; }
+/* --- PÁGINA INICIAL --- */
+.hero {
+    height: 60vh;
+    background: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+.hero-content { background-color: rgba(0, 0, 0, 0.6); padding: 40px; border-radius: 10px; }
+.hero-content h1 { font-size: 3rem; margin-bottom: 20px; }
+.hero-content p { font-size: 1.2rem; margin-bottom: 30px; }
+.vagas-section { padding: 2rem 0; }
+.vagas-section h2 { text-align: center; }
+/* --- FORMULÁRIOS --- */
+.form { background: var(--bg-panel); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); max-width: 500px; margin: 2rem auto; }
+.form label { display: block; margin-bottom: 1rem; font-weight: 500; color: var(--text-muted); }
+.form input, .form select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    margin-top: 0.5rem;
+}
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    border: 0;
+    background: var(--primary-color);
+    color: var(--bg-dark);
+    cursor: pointer;
+    margin-top: 1rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+.btn:hover { transform: scale(1.05); }
+.form-link { text-align: center; margin-top: 1rem; }
+.form-link a { color: var(--primary-color); }
+/* --- LISTA DE VAGAS --- */
+.vaga { background: var(--bg-panel); padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; border-left: 4px solid var(--primary-color); }
+.vaga h4 { margin: 0 0 0.5rem; color: #fff; }
+.vaga p { margin: 0.25rem 0; color: var(--text-muted); }
+.vaga .btn { margin-top: 1rem; padding: 0.5rem 1rem; }
+.vaga ul { padding-left: 20px; color: var(--text-muted); list-style-type: none; }
+.vaga ul li { background-color: var(--bg-dark); padding: 8px; border-radius: 4px; margin-bottom: 5px; }
+/* --- TABELAS --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    background-color: var(--bg-panel);
+}
+table th, table td {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    text-align: left;
+}
+table th {
+    background-color: var(--bg-dark);
+    color: var(--primary-color);
+}
+table tfoot td {
+    font-weight: bold;
+    color: #fff;
+}
+/* --- NOTIFICAÇÕES --- */
+#notification-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; }
+.notification {
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    border-radius: 5px;
+    color: var(--white);
+    background-color: var(--bg-panel);
+    border-left: 4px solid;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.notification.success { border-color: var(--success); }
+.notification.error { border-color: var(--danger); }
