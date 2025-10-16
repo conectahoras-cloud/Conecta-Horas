@@ -1,0 +1,6 @@
+<!DOCTYPE html><html lang='pt-br'><head><meta charset='utf-8'><title>Cadastro — ConectaHoras</title><link rel='stylesheet' href='main.css'></head>
+<body><div id='notification-container'></div><header class='topbar'><a href='index.html' class='brand'>ConectaHoras</a><nav></nav><div id='menuUser'></div></header>
+<main class='container'><div class='form'><h1>Crie sua Conta</h1><label>Nome:<input type='text' id='cadNome'></label><label>Email:<input type='text' id='cadEmail'></label>
+<label>Senha:<input type='password' id='cadSenha'></label><label>Tipo:<select id='cadTipo'><option value='funcionario'>Funcionário</option><option value='empregador'>Empregador</option></select></label>
+<button class='btn' onclick='doRegister()'>Cadastrar</button><p class='form-link'>Já tem conta? <a href='login.html'>Faça login</a></p></div></main>
+<script src='main.js'></script><script>function doRegister(){var n=cadNome.value.trim(),e=cadEmail.value.trim(),s=cadSenha.value,t=cadTipo.value;if(!n||!e||!s)return showNotification('Preencha todos os campos.','error');if(registerUser(n,e,s,t))setTimeout(()=>window.location.href='login.html',1000);}document.addEventListener('DOMContentLoaded',showMenuUser);</script></body></html>

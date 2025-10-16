@@ -1,0 +1,5 @@
+<!DOCTYPE html><html lang='pt-br'><head><meta charset='utf-8'><title>Login — ConectaHoras</title><link rel='stylesheet' href='main.css'></head>
+<body><div id='notification-container'></div><header class='topbar'><a href='index.html' class='brand'>ConectaHoras</a><nav></nav><div id='menuUser'></div></header>
+<main class='container'><div class='form'><h1>Login</h1><label>Email:<input type='text' id='loginEmail'></label><label>Senha:<input type='password' id='loginSenha'></label>
+<button class='btn' onclick='doLogin()'>Entrar</button><p class='form-link'>Não tem conta? <a href='cadastro.html'>Cadastre-se</a></p></div></main>
+<script src='main.js'></script><script>function doLogin(){var e=loginEmail.value.trim(),s=loginSenha.value;if(!e||!s)return showNotification('Preencha email e senha.','error');var u=loginUser(e,s);if(u)window.location.href='index.html';}document.addEventListener('DOMContentLoaded',showMenuUser);</script></body></html>
