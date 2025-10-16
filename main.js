@@ -1,54 +1,56 @@
-// main.js — versão simples e funcional com localStorage
+// Salva e mostra apenas o nome do usuário
 
-// Entrar (na página inicial)
-function entrar() {
+function cadastrar(tipo) {
   const nome = document.getElementById('nomeUsuario').value.trim();
+
   if (nome === '') {
     alert('Digite seu nome!');
     return;
   }
-  // Salva o nome na URL e vai para a página de funcionário
-  window.location.href = 'funcionario.html?nome=' + encodeURIComponent(nome);
+
+  localStorage.setItem('nomeUsuario', nome);
+  localStorage.setItem('tipoUsuario', tipo);
+
+  if (tipo === 'funcionario') {
+    window.location.href = 'funcionario.html';
+  } else {
+    window.location.href = 'empresa.html';
+  }
 }
 
-// Mostrar mensagem de boas-vindas
-function mostrarBoasVindas() {
-  const params = new URLSearchParams(window.location.search);
-  const nome = params.get('nome');
+function entrar(tipo) {
+  const nome = document.getElementById('nomeUsuario').value.trim();
 
-  if (!nome) {
-    alert('Acesso negado! Volte à página inicial.');
-    window.location.href = 'index.html';
+  if (nome === '') {
+    alert('Digite seu nome!');
     return;
   }
 
-  const titulo = document.getElementById('bemvindo');
-  if (titulo) titulo.innerHTML = `Olá, <strong>${nome}</strong>! Bem-vindo(a) de volta.`;
+  localStorage.setItem('nomeUsuario', nome);
+  localStorage.setItem('tipoUsuario', tipo);
+
+  if (tipo === 'funcionario') {
+    window.location.href = 'funcionario.html';
+  } else {
+    window.location.href = 'empresa.html';
+  }
 }
 
-// Atualiza o texto do banco de horas
-function atualizarBancoHoras() {
-  const horas = localStorage.getItem('bancoDeHoras') || 0;
-  const el = document.getElementById('bancoHoras');
-  if (el) el.innerText = `${horas} horas registradas.`;
+function mostrarBoasVindas() {
+  const nome = localStorage.getItem('nomeUsuario');
+  const tipo = localStorage.getItem('tipoUsuario');
+
+  if (!nome || !tipo) {
+    alert('Acesso negado! Volte à página de login.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  document.getElementById('bemvindo').innerHTML = `Olá, <strong>${nome}</strong>!`;
 }
 
-// Adiciona uma hora ao banco
-function adicionarHora() {
-  let horas = parseInt(localStorage.getItem('bancoDeHoras') || 0);
-  horas++;
-  localStorage.setItem('bancoDeHoras', horas);
-  atualizarBancoHoras();
-}
-
-// Zera o banco de horas
-function zerarHoras() {
-  localStorage.setItem('bancoDeHoras', 0);
-  atualizarBancoHoras();
-}
-
-// Sair
 function sair() {
-  alert('Você saiu.');
+  localStorage.removeItem('nomeUsuario');
+  localStorage.removeItem('tipoUsuario');
   window.location.href = 'index.html';
 }
